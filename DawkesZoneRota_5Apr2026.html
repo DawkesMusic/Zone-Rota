@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dawkes Zone Rota</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #D83D96;
+    --dark: #1a1a1a;
+    --mid: #2a2a2a;
+    --border: #3a3a3a;
+    --text: #f0f0f0;
+    --muted: #999;
+    --z1: #3a7bd5;
+    --z2: #27ae60;
+    --z3: #e67e22;
+    --z4: #8e44ad;
+    --gold: #f1c40f;
+    --closed: #444;
+    --off: #2a2a2a;
+    --warn-red: #e74c3c;
+    --warn-amber: #f39c12;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--mid);
+    border-bottom: 2px solid var(--pink);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .brand-name span { color: var(--pink); }
+
+  .brand-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .week-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 180px;
+    text-align: center;
+  }
+
+  .btn {
+    background: var(--border);
+    color: var(--text);
+    border: 1px solid #555;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { background: #4a4a4a; }
+  .btn.pink { background: var(--pink); border-color: var(--pink); }
+  .btn.pink:hover { background: #c0357f; }
+  .btn.outline { background: transparent; border-color: var(--pink); color: var(--pink); }
+  .btn.outline:hover { background: rgba(216,61,150,0.1); }
+
+  /* ── COVERAGE BAR ── */
+  .coverage-bar {
+    background: var(--mid);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+
+  .coverage-label { color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .cov-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .cov-ok { background: rgba(39,174,96,0.15); color: #27ae60; border: 1px solid rgba(39,174,96,0.3); }
+  .cov-warn { background: rgba(231,76,60,0.15); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+  .cov-amber { background: rgba(243,156,18,0.15); color: #f39c12; border: 1px solid rgba(243,156,18,0.3); }
+
+  .warning-text {
+    color: var(--warn-red);
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main { padding: 16px 20px; }
+
+  /* ── ROTA TABLE ── */
+  .rota-scroll { overflow-x: auto; }
+
+  .rota-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .rota-table th {
+    background: #222;
+    padding: 10px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .rota-table th.day-col { min-width: 90px; }
+  .rota-table th.name-col { min-width: 150px; text-align: left; padding-left: 16px; }
+
+  .rota-table td {
+    padding: 6px 6px;
+    border-bottom: 1px solid #2d2d2d;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .rota-table td.name-cell {
+    text-align: left;
+    padding-left: 16px;
+    min-width: 150px;
+  }
+
+  .rota-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .staff-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .staff-pattern {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* ── ZONE BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+    min-width: 58px;
+  }
+
+  .badge:hover { filter: brightness(1.15); transform: scale(1.03); }
+
+  .badge-z1 { background: rgba(58,123,213,0.2); color: #5b9cf6; border-color: rgba(58,123,213,0.4); }
+  .badge-z2 { background: rgba(39,174,96,0.2); color: #4cd080; border-color: rgba(39,174,96,0.4); }
+  .badge-z3 { background: rgba(230,126,34,0.2); color: #f0a050; border-color: rgba(230,126,34,0.4); }
+  .badge-z4 { background: rgba(142,68,173,0.2); color: #c48cec; border-color: rgba(142,68,173,0.4); }
+
+  .badge-z2-star {
+    background: rgba(241,196,15,0.2);
+    color: #f1c40f;
+    border-color: rgba(241,196,15,0.5);
+    box-shadow: 0 0 8px rgba(241,196,15,0.2);
+  }
+
+  .badge-off {
+    background: transparent;
+    color: #555;
+    border-color: #333;
+    cursor: default;
+    font-weight: 400;
+  }
+
+  .badge-off:hover { filter: none; transform: none; }
+
+  .badge-dayoff {
+    background: rgba(243,156,18,0.08);
+    color: #777;
+    border: 2px dashed rgba(243,156,18,0.3);
+    cursor: default;
+    font-weight: 400;
+  }
+
+  .badge-dayoff:hover { filter: none; transform: none; }
+
+  .badge-closed {
+    background: #222;
+    color: #555;
+    border-color: #333;
+    cursor: default;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .badge-closed:hover { filter: none; transform: none; }
+
+  .badge-sick {
+    background: rgba(231,76,60,0.15);
+    color: #e74c3c;
+    border-color: rgba(231,76,60,0.4);
+  }
+
+  .badge-extra {
+    background: rgba(52,152,219,0.15);
+    color: #5bc0eb;
+    border-color: rgba(52,152,219,0.4);
+  }
+
+  .badge-hol {
+    background: rgba(241,196,15,0.1);
+    color: #c9a227;
+    border-color: rgba(241,196,15,0.3);
+    font-style: italic;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #222;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    min-width: 280px;
+    max-width: 360px;
+    width: 90vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .modal h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .modal-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .modal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .modal-btn {
+    background: var(--mid);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .modal-btn:hover { background: #3a3a3a; border-color: var(--pink); }
+  .modal-btn.danger { color: #e74c3c; }
+  .modal-btn.danger:hover { border-color: #e74c3c; background: rgba(231,76,60,0.1); }
+  .modal-btn.reset { color: var(--muted); }
+
+  .modal-cancel {
+    width: 100%;
+    background: transparent;
+    border: 1px solid #444;
+    color: var(--muted);
+    padding: 8px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .modal-cancel:hover { border-color: #666; color: var(--text); }
+
+  /* ── SETTINGS PANEL ── */
+  .settings-panel {
+    display: none;
+    background: #222;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .settings-panel.open { display: block; }
+
+  .settings-panel h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .settings-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .settings-field input {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+  }
+
+  .settings-field input:focus { outline: none; border-color: var(--pink); }
+
+  .subject-field { grid-column: 1 / -1; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px 20px;
+    background: var(--mid);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Z2 WEEK BANNER ── */
+  .z2-week-banner {
+    background: rgba(241,196,15,0.08);
+    border: 1px solid rgba(241,196,15,0.2);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #c9a227;
+    display: none;
+  }
+
+  .z2-week-banner.visible { display: flex; align-items: center; gap: 8px; }
+
+  /* ── EMAIL PREVIEW ── */
+  .email-preview {
+    display: none;
+    background: #222;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--text);
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+
+  .email-preview.open { display: block; }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { background: white; color: black; }
+    .header-controls, .legend, .modal-overlay, .settings-panel, .email-preview { display: none !important; }
+    .header { background: white; border-bottom: 2px solid #D83D96; color: black; }
+    .brand-name { color: black; }
+    .coverage-bar { background: white; border-bottom: 1px solid #ddd; color: black; }
+    .rota-table th { background: #f5f5f5; color: #333; border-bottom: 2px solid #ddd; }
+    .rota-table td { border-bottom: 1px solid #eee; }
+    .rota-table tr:hover td { background: transparent; }
+    .staff-name { color: black; }
+    .staff-pattern { color: #666; }
+    .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .coverage-bar { display: none; }
+    .z2-week-banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  /* ── FOOTER NOTE ── */
+  .footer-note {
+    padding: 10px 20px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-brand">
+    <div>
+      <div class="brand-name">dawk<span>e</span>s</div>
+      <div class="brand-sub">Zone Rota · est. 1966</div>
+    </div>
+  </div>
+  <div class="header-controls">
+    <div class="week-nav">
+      <button class="btn" onclick="changeWeek(-1)">&#8592;</button>
+      <div class="week-label" id="weekLabel"></div>
+      <button class="btn" onclick="changeWeek(1)">&#8594;</button>
+    </div>
+    <button class="btn" onclick="goToToday()">This week</button>
+    <button class="btn outline" onclick="toggleSettings()">⚙ Settings</button>
+    <button class="btn outline" onclick="showEmail()">✉ Email</button>
+    <button class="btn outline" onclick="window.print()">🖨 Print</button>
+  </div>
+</div>
+
+<!-- COVERAGE BAR -->
+<div class="coverage-bar" id="coverageBar">
+  <span class="coverage-label">Coverage</span>
+  <div id="coveragePills"></div>
+  <div id="warningText"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Z2 WEEK BANNER -->
+  <div class="z2-week-banner" id="z2Banner">
+    ⭐ Z2 week — one of Tibor or Josh is in Zone 2 this week. Flag in team email.
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div class="settings-panel" id="settingsPanel">
+    <h3>Settings — Team Email Addresses</h3>
+    <div class="settings-grid" id="emailFields"></div>
+    <div class="settings-field subject-field">
+      <label>Email Subject Line</label>
+      <input type="text" id="emailSubject" placeholder="Zone Rota — w/c [date]" oninput="saveSettings()">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn pink" onclick="toggleSettings()">Save & Close</button>
+      <button class="btn" onclick="clearAllOverrides()">Clear all overrides</button>
+    </div>
+  </div>
+
+  <!-- EMAIL PREVIEW -->
+  <div class="email-preview" id="emailPreview"></div>
+
+  <!-- ROTA TABLE -->
+  <div class="rota-scroll">
+    <table class="rota-table" id="rotaTable">
+      <thead id="rotaHead"></thead>
+      <tbody id="rotaBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#5b9cf6"></span>Zone 1 — Front of house</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#4cd080"></span>Zone 2 — Appointments (min 3)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#f0a050"></span>Zone 3 — QC &amp; prep (min 1)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#c48cec"></span>Zone 4 — Goods in/out (min 1)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#f1c40f"></span>⭐ Z2 week (Tibor/Josh)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#555;border:1px dashed #f39c12"></span>Day off (expected)</span>
+  <span class="legend-item">Click any badge to override</span>
+</div>
+
+<div class="footer-note">
+  Dawkes Music &amp; Windcraft · Zone Rota · Owned by Alison · Reviewed with Matt · Changes auto-saved
+</div>
+
+<!-- OVERRIDE MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <h3 id="modalTitle">Override</h3>
+    <div class="modal-sub" id="modalSub"></div>
+    <div class="modal-options" id="modalOptions"></div>
+    <button class="modal-cancel" onclick="closeModalDirect()">Cancel</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════════════════
+
+// 2026 England bank holidays (hardcoded, fetch as backup)
+const BANK_HOLIDAYS_2026 = [
+  '2026-01-01', // New Year's Day
+  '2026-04-03', // Good Friday
+  '2026-04-06', // Easter Monday
+  '2026-05-04', // Early May bank holiday
+  '2026-05-25', // Spring bank holiday
+  '2026-08-31', // Summer bank holiday
+  '2026-12-25', // Christmas Day
+  '2026-12-26', // Boxing Day
+];
+
+let bankHolidays = new Set(BANK_HOLIDAYS_2026);
+
+// Tibor/Josh 3-week rotation
+// Epoch = week of Mon 13 Apr 2026
+// Week 0: Tibor→Z2, Josh→Z3
+// Week 1: Tibor→Z3, Josh→Z4
+// Week 2: Tibor→Z4, Josh→Z2
+const ROTATION_EPOCH = new Date(2026, 3, 13); // Mon 13 Apr 2026
+
+const ROTATION = [
+  { tibor: 2, josh: 3 }, // week 0
+  { tibor: 3, josh: 4 }, // week 1
+  { tibor: 4, josh: 2 }, // week 2
+];
+
+// Staff definitions
+// baseDays: 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat (0=Sun, never used)
+// baseOff: days of week they are regularly off
+// defaultZone: default zone (null = uses rotation or other logic)
+// zones: which zones they can work
+const STAFF = [
+  {
+    id: 'alison',
+    name: 'Alison',
+    pattern: 'Mon–Fri · Zone 1 · 9:15–15:15',
+    baseDays: [1,2,3,4,5],
+    baseOff: [6],
+    defaultZone: 1,
+    zones: [1,2],
+    fixed: true,
+  },
+  {
+    id: 'matt',
+    name: 'Matt',
+    pattern: 'Mon–Fri · Zone 2',
+    baseDays: [1,2,3,4,5],
+    baseOff: [6],
+    defaultZone: 2,
+    zones: [1,2],
+    fixed: true,
+  },
+  {
+    id: 'chris',
+    name: 'Chris',
+    pattern: 'Mon–Fri (Fri off) · Zone 2',
+    baseDays: [1,2,3,4,5],
+    baseOff: [5,6],
+    defaultZone: 2,
+    zones: [1,2],
+    fixed: true,
+  },
+  {
+    id: 'tibor',
+    name: 'Tibor',
+    pattern: 'Mon–Sat (Tue off) · rotation',
+    baseDays: [1,2,3,4,5,6],
+    baseOff: [2],
+    defaultZone: null, // rotation
+    zones: [2,3,4],
+    isRotation: true,
+    rotationKey: 'tibor',
+  },
+  {
+    id: 'josh',
+    name: 'Josh',
+    pattern: 'Mon–Sat (Thu off) · rotation',
+    baseDays: [1,2,3,4,5,6],
+    baseOff: [4],
+    defaultZone: null, // rotation
+    zones: [2,3,4],
+    isRotation: true,
+    rotationKey: 'josh',
+  },
+  {
+    id: 'carl',
+    name: 'Carl',
+    pattern: 'Mon · Tue · Sat · Zones 1–2',
+    baseDays: [1,2,6],
+    baseOff: [],
+    defaultZone: 2,
+    zones: [1,2],
+  },
+  {
+    id: 'adam',
+    name: 'Adam',
+    pattern: 'Mon–Sat (normally Sat off) · Zones 1–2',
+    baseDays: [1,2,3,4,5,6],
+    baseOff: [6],
+    defaultZone: 2,
+    zones: [1,2],
+  },
+  {
+    id: 'olivia',
+    name: 'Olivia',
+    pattern: 'Wed · Fri · Sat · Zones 1–2',
+    baseDays: [3,5,6],
+    baseOff: [],
+    defaultZone: 1,
+    zones: [1,2],
+  },
+  {
+    id: 'elena',
+    name: 'Elena',
+    pattern: 'Saturdays only · Zone 2',
+    baseDays: [6],
+    baseOff: [],
+    defaultZone: 2,
+    zones: [1,2],
+  },
+  {
+    id: 'immy',
+    name: 'Immy',
+    pattern: 'Ad hoc · all zones',
+    baseDays: [],
+    baseOff: [],
+    defaultZone: 2,
+    zones: [1,2,3,4],
+    adHoc: true,
+  },
+];
+
+// Known absences: 'YYYY-MM-DD' → [staffId, ...]
+const KNOWN_ABSENCES = {
+  '2026-04-11': ['adam'],
+  '2026-04-17': ['josh'],
+  '2026-04-18': ['adam', 'olivia'],
+};
+
+// Known extra days (people working who normally wouldn't be)
+const KNOWN_EXTRAS = {
+  '2026-04-07': ['immy'],
+  '2026-04-08': ['immy'],
+  '2026-04-09': ['immy'],
+  '2026-04-10': ['immy'],
+  '2026-04-11': ['immy'],
+  '2026-04-20': ['olivia'],
+  '2026-04-21': ['carl'],
+  '2026-04-23': ['adam'],
+  '2026-04-28': ['carl'],
+  '2026-04-30': ['adam'],
+};
+
+// Dorothy joins full-time 22 June 2026
+const DOROTHY_START = new Date(2026, 5, 22);
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+
+const LS_KEY = 'dawkes_zone_rota_v1';
+let state = {
+  overrides: {}, // 'staffId|YYYY-MM-DD' → { type, zone, note }
+  emails: {},    // staffId → email
+  emailSubject: '',
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      state = Object.assign(state, saved);
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+function getOverride(staffId, dateStr) {
+  return state.overrides[`${staffId}|${dateStr}`] || null;
+}
+
+function setOverride(staffId, dateStr, override) {
+  if (override === null) {
+    delete state.overrides[`${staffId}|${dateStr}`];
+  } else {
+    state.overrides[`${staffId}|${dateStr}`] = override;
+  }
+  saveState();
+  renderRota();
+}
+
+// ═══════════════════════════════════════════════════════
+// DATE UTILITIES
+// ═══════════════════════════════════════════════════════
+
+function getMondayOfWeek(date) {
+  const d = new Date(date);
+  const day = d.getDay(); // 0=Sun
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+function addDays(date, n) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+function dateStr(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function isBankHoliday(date) {
+  return bankHolidays.has(dateStr(date));
+}
+
+function formatDay(date) {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+}
+
+function formatWeekLabel(monday) {
+  const sat = addDays(monday, 5);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if (monday.getMonth() === sat.getMonth()) {
+    return `w/c ${monday.getDate()} ${months[monday.getMonth()]} ${monday.getFullYear()}`;
+  }
+  return `${monday.getDate()} ${months[monday.getMonth()]} – ${sat.getDate()} ${months[sat.getMonth()]} ${monday.getFullYear()}`;
+}
+
+// Week number relative to epoch (for Tibor/Josh rotation)
+function getRotationWeek(monday) {
+  const epochMon = getMondayOfWeek(ROTATION_EPOCH);
+  const diffMs = monday.getTime() - epochMon.getTime();
+  const diffWeeks = Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
+  return ((diffWeeks % 3) + 3) % 3;
+}
+
+// ═══════════════════════════════════════════════════════
+// ROTA LOGIC
+// ═══════════════════════════════════════════════════════
+
+// Returns the working days Mon–Sat for a given week
+function getWeekDays(monday) {
+  const days = [];
+  for (let i = 0; i < 6; i++) {
+    days.push(addDays(monday, i));
+  }
+  return days;
+}
+
+// Returns what a staff member should show for a given date
+// Returns: { status: 'working'|'off'|'closed'|'dayoff'|'absent', zone, isZ2Star }
+function getStaffDayStatus(staff, date, rotWeek) {
+  const ds = dateStr(date);
+  const dow = date.getDay(); // 1=Mon, 6=Sat
+
+  // Bank holiday / closed
+  if (isBankHoliday(date)) {
+    return { status: 'closed' };
+  }
+
+  // Check override first
+  const ov = getOverride(staff.id, ds);
+  if (ov) {
+    if (ov.type === 'off') return { status: 'off' };
+    if (ov.type === 'sick') return { status: 'sick' };
+    if (ov.type === 'hol') return { status: 'hol' };
+    if (ov.type === 'extra') return { status: 'working', zone: ov.zone, isZ2Star: false, overrideLabel: 'extra' };
+    if (ov.type === 'zone') return buildWorking(staff, date, ov.zone, rotWeek, false);
+  }
+
+  // Ad hoc (Immy) — only show when in KNOWN_EXTRAS
+  if (staff.adHoc) {
+    const extras = KNOWN_EXTRAS[ds] || [];
+    if (extras.includes(staff.id)) {
+      return { status: 'working', zone: staff.defaultZone, isZ2Star: false };
+    }
+    return { status: 'absent' }; // don't show at all
+  }
+
+  // Known absence
+  const absences = KNOWN_ABSENCES[ds] || [];
+  if (absences.includes(staff.id)) {
+    return { status: 'hol' };
+  }
+
+  // Extra days
+  const extras = KNOWN_EXTRAS[ds] || [];
+  const isExtra = extras.includes(staff.id);
+
+  // Is this a base working day?
+  const isBaseDay = staff.baseDays.includes(dow);
+  const isBaseOff = staff.baseOff.includes(dow);
+
+  if (!isBaseDay && !isExtra) {
+    // Not scheduled
+    return { status: 'absent' };
+  }
+
+  if (isBaseOff && !isExtra) {
+    // Regular day off
+    return { status: 'dayoff' };
+  }
+
+  // Working — determine zone
+  if (staff.isRotation) {
+    const rot = ROTATION[rotWeek];
+    const zone = rot[staff.rotationKey];
+    const isZ2Star = (zone === 2);
+    return buildWorking(staff, date, zone, rotWeek, isZ2Star);
+  }
+
+  return buildWorking(staff, date, staff.defaultZone, rotWeek, false);
+}
+
+function buildWorking(staff, date, zone, rotWeek, isZ2Star) {
+  return { status: 'working', zone, isZ2Star };
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════════
+
+let currentMonday;
+
+function getDefaultMonday() {
+  // Default to week of 7 Apr 2026
+  const defaultDate = new Date(2026, 3, 7); // 7 Apr 2026
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  // If today is after the default, use today's week
+  if (today > defaultDate) {
+    return getMondayOfWeek(today);
+  }
+  return getMondayOfWeek(defaultDate);
+}
+
+function changeWeek(dir) {
+  currentMonday = addDays(currentMonday, dir * 7);
+  renderRota();
+}
+
+function goToToday() {
+  currentMonday = getMondayOfWeek(new Date());
+  renderRota();
+}
+
+function renderRota() {
+  const days = getWeekDays(currentMonday);
+  const rotWeek = getRotationWeek(currentMonday);
+
+  // Week label
+  document.getElementById('weekLabel').textContent = formatWeekLabel(currentMonday);
+
+  // Check if Z2 week for Tibor or Josh
+  const rot = ROTATION[rotWeek];
+  const isZ2Week = (rot.tibor === 2 || rot.josh === 2);
+  const z2Banner = document.getElementById('z2Banner');
+  if (isZ2Week) {
+    z2Banner.classList.add('visible');
+    const who = rot.tibor === 2 ? 'Tibor' : 'Josh';
+    z2Banner.textContent = `⭐ Z2 week — ${who} is in Zone 2. Flag in team email.`;
+  } else {
+    z2Banner.classList.remove('visible');
+  }
+
+  // Build header
+  const head = document.getElementById('rotaHead');
+  let headHTML = '<tr>';
+  headHTML += '<th class="name-col">Team member</th>';
+  days.forEach(d => {
+    const isBH = isBankHoliday(d);
+    const style = isBH ? 'color:#e74c3c;' : '';
+    headHTML += `<th class="day-col" style="${style}">${formatDay(d)}${isBH ? '<br><span style="font-size:9px;">CLOSED</span>' : ''}</th>`;
+  });
+  headHTML += '</tr>';
+  head.innerHTML = headHTML;
+
+  // Build body
+  const body = document.getElementById('rotaBody');
+  let bodyHTML = '';
+
+  // Coverage tracking
+  const coverageByDay = days.map(() => ({ z1: 0, z2: 0, z3: 0, z4: 0 }));
+
+  // Filter staff — hide Immy if not working any day this week
+  const visibleStaff = STAFF.filter(s => {
+    if (!s.adHoc) return true;
+    // Show Immy only if they have at least one working day this week
+    return days.some(d => {
+      const ds = dateStr(d);
+      const extras = KNOWN_EXTRAS[ds] || [];
+      return extras.includes(s.id);
+    });
+  });
+
+  visibleStaff.forEach(staff => {
+    bodyHTML += '<tr>';
+    bodyHTML += `<td class="name-cell"><div class="staff-name">${staff.name}</div><div class="staff-pattern">${staff.pattern}</div></td>`;
+
+    days.forEach((d, i) => {
+      const status = getStaffDayStatus(staff, d, rotWeek);
+      const ds = dateStr(d);
+
+      if (status.status === 'absent') {
+        bodyHTML += '<td><span class="badge badge-off">—</span></td>';
+      } else if (status.status === 'closed') {
+        bodyHTML += '<td><span class="badge badge-closed">Closed</span></td>';
+      } else if (status.status === 'off') {
+        bodyHTML += `<td><span class="badge badge-off" onclick="openModal('${staff.id}','${ds}','${staff.name}')">Off</span></td>`;
+      } else if (status.status === 'sick') {
+        bodyHTML += `<td><span class="badge badge-sick" onclick="openModal('${staff.id}','${ds}','${staff.name}')">Sick</span></td>`;
+      } else if (status.status === 'hol') {
+        bodyHTML += `<td><span class="badge badge-hol" onclick="openModal('${staff.id}','${ds}','${staff.name}')">HOL</span></td>`;
+      } else if (status.status === 'dayoff') {
+        bodyHTML += `<td><span class="badge badge-dayoff" onclick="openModal('${staff.id}','${ds}','${staff.name}')">Day off</span></td>`;
+      } else if (status.status === 'working') {
+        const z = status.zone;
+        if (z === 1) coverageByDay[i].z1++;
+        else if (z === 2) coverageByDay[i].z2++;
+        else if (z === 3) coverageByDay[i].z3++;
+        else if (z === 4) coverageByDay[i].z4++;
+
+        let cls, label;
+        if (status.isZ2Star) {
+          cls = 'badge-z2-star';
+          label = '⭐ Z2';
+        } else if (z === 1) { cls = 'badge-z1'; label = 'Zone 1'; }
+        else if (z === 2) { cls = 'badge-z2'; label = 'Zone 2'; }
+        else if (z === 3) { cls = 'badge-z3'; label = 'Zone 3'; }
+        else if (z === 4) { cls = 'badge-z4'; label = 'Zone 4'; }
+        else { cls = 'badge-off'; label = '—'; }
+
+        if (status.overrideLabel === 'extra') label = `${label} +`;
+
+        bodyHTML += `<td><span class="badge ${cls}" onclick="openModal('${staff.id}','${ds}','${staff.name}')">${label}</span></td>`;
+      }
+    });
+
+    bodyHTML += '</tr>';
+  });
+
+  body.innerHTML = bodyHTML;
+
+  // Render coverage
+  renderCoverage(days, coverageByDay);
+}
+
+function renderCoverage(days, coverageByDay) {
+  const pillsEl = document.getElementById('coveragePills');
+  const warnEl = document.getElementById('warningText');
+  let pillsHTML = '';
+  let warnings = [];
+
+  days.forEach((d, i) => {
+    if (isBankHoliday(d)) return;
+    const c = coverageByDay[i];
+    const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+
+    let dayClass = 'cov-ok';
+    let dayWarns = [];
+
+    if (c.z2 < 3) { dayClass = 'cov-warn'; dayWarns.push(`Z2:${c.z2}/3`); }
+    if (c.z1 < 1) { dayClass = 'cov-warn'; dayWarns.push('Z1 empty'); }
+    if (c.z4 < 1) { if (dayClass === 'cov-ok') dayClass = 'cov-amber'; dayWarns.push('Z4 gap'); }
+    if (c.z3 < 1) { if (dayClass === 'cov-ok') dayClass = 'cov-amber'; dayWarns.push('Z3 gap'); }
+
+    const summary = `Z1:${c.z1} Z2:${c.z2} Z3:${c.z3} Z4:${c.z4}`;
+    const icon = dayClass === 'cov-ok' ? '✓' : (dayClass === 'cov-warn' ? '✗' : '⚠');
+
+    pillsHTML += `<span class="cov-pill ${dayClass}" title="${summary}">${icon} ${dayName}</span> `;
+
+    if (dayWarns.length) warnings.push(`${dayName}: ${dayWarns.join(', ')}`);
+  });
+
+  pillsEl.innerHTML = pillsHTML;
+  warnEl.innerHTML = warnings.length
+    ? `<span class="warning-text">⚠ ${warnings.join(' · ')}</span>`
+    : '';
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+
+let modalContext = null;
+
+function openModal(staffId, ds, staffName) {
+  const overlay = document.getElementById('modalOverlay');
+  const title = document.getElementById('modalTitle');
+  const sub = document.getElementById('modalSub');
+  const options = document.getElementById('modalOptions');
+
+  modalContext = { staffId, ds };
+
+  // Format date nicely
+  const [y, m, day] = ds.split('-');
+  const dateObj = new Date(parseInt(y), parseInt(m)-1, parseInt(day));
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const niceDateStr = `${dayNames[dateObj.getDay()]} ${dateObj.getDate()} ${monthNames[dateObj.getMonth()]}`;
+
+  title.textContent = staffName;
+  sub.textContent = niceDateStr;
+
+  const currentOv = getOverride(staffId, ds);
+
+  let optsHTML = '';
+
+  // Zone options
+  [1,2,3,4].forEach(z => {
+    const labels = { 1: 'Move to Zone 1', 2: 'Move to Zone 2', 3: 'Move to Zone 3', 4: 'Move to Zone 4' };
+    optsHTML += `<button class="modal-btn" onclick="applyOverride('zone',${z})">${labels[z]}</button>`;
+  });
+
+  optsHTML += `<button class="modal-btn danger" onclick="applyOverride('sick',null)">Mark as sick</button>`;
+  optsHTML += `<button class="modal-btn" onclick="applyOverride('hol',null)">Mark as holiday / off</button>`;
+  optsHTML += `<button class="modal-btn" onclick="applyOverride('extra',2)">Mark as extra day in (Zone 2)</button>`;
+
+  if (currentOv) {
+    optsHTML += `<button class="modal-btn reset" onclick="applyOverride('reset',null)">↩ Reset to default</button>`;
+  }
+
+  options.innerHTML = optsHTML;
+  overlay.classList.add('open');
+}
+
+function applyOverride(type, zone) {
+  if (!modalContext) return;
+  const { staffId, ds } = modalContext;
+
+  if (type === 'reset') {
+    setOverride(staffId, ds, null);
+  } else if (type === 'zone') {
+    setOverride(staffId, ds, { type: 'zone', zone });
+  } else if (type === 'sick') {
+    setOverride(staffId, ds, { type: 'sick' });
+  } else if (type === 'hol') {
+    setOverride(staffId, ds, { type: 'hol' });
+  } else if (type === 'extra') {
+    setOverride(staffId, ds, { type: 'extra', zone: zone || 2 });
+  }
+
+  closeModalDirect();
+}
+
+function closeModal(event) {
+  if (event.target === document.getElementById('modalOverlay')) {
+    closeModalDirect();
+  }
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  modalContext = null;
+}
+
+function clearAllOverrides() {
+  if (confirm('Clear all overrides? This cannot be undone.')) {
+    state.overrides = {};
+    saveState();
+    renderRota();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+
+function toggleSettings() {
+  const panel = document.getElementById('settingsPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    renderEmailFields();
+  }
+}
+
+function renderEmailFields() {
+  const grid = document.getElementById('emailFields');
+  let html = '';
+  STAFF.forEach(s => {
+    const val = state.emails[s.id] || '';
+    html += `<div class="settings-field">
+      <label>${s.name}</label>
+      <input type="email" value="${val}" placeholder="${s.name.toLowerCase()}@dawkes.co.uk" oninput="updateEmail('${s.id}', this.value)">
+    </div>`;
+  });
+  grid.innerHTML = html;
+  document.getElementById('emailSubject').value = state.emailSubject || '';
+}
+
+function updateEmail(staffId, val) {
+  state.emails[staffId] = val;
+  saveState();
+}
+
+function saveSettings() {
+  state.emailSubject = document.getElementById('emailSubject').value;
+  saveState();
+}
+
+// ═══════════════════════════════════════════════════════
+// EMAIL
+// ═══════════════════════════════════════════════════════
+
+function showEmail() {
+  const preview = document.getElementById('emailPreview');
+  if (preview.classList.contains('open')) {
+    preview.classList.remove('open');
+    return;
+  }
+
+  const days = getWeekDays(currentMonday);
+  const rotWeek = getRotationWeek(currentMonday);
+  const rot = ROTATION[rotWeek];
+
+  const zoneNames = { 1: 'Zone 1', 2: 'Zone 2', 3: 'Zone 3', 4: 'Zone 4' };
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let lines = [];
+
+  const subj = state.emailSubject || `Zone Rota — ${formatWeekLabel(currentMonday)}`;
+  lines.push(`TO: Matt`);
+  lines.push(`SUBJECT: ${subj}`);
+  lines.push('');
+  lines.push(`Zone Rota — ${formatWeekLabel(currentMonday)}`);
+  lines.push('');
+
+  // Z2 week flag
+  if (rot.tibor === 2 || rot.josh === 2) {
+    const who = rot.tibor === 2 ? 'Tibor' : 'Josh';
+    lines.push(`⭐ Z2 week: ${who} is in Zone 2 this week.`);
+    lines.push('');
+  }
+
+  // Name-first format
+  STAFF.filter(s => !s.adHoc || days.some(d => (KNOWN_EXTRAS[dateStr(d)] || []).includes(s.id))).forEach(staff => {
+    let dayEntries = [];
+    days.forEach(d => {
+      if (isBankHoliday(d)) return;
+      const status = getStaffDayStatus(staff, d, rotWeek);
+      const dName = dayNames[d.getDay()];
+      if (status.status === 'working') {
+        dayEntries.push(`${dName}: ${zoneNames[status.zone]}${status.isZ2Star ? ' ⭐' : ''}`);
+      } else if (status.status === 'sick') {
+        dayEntries.push(`${dName}: Sick`);
+      } else if (status.status === 'hol') {
+        dayEntries.push(`${dName}: Holiday`);
+      }
+      // off/absent/dayoff = omit (expected)
+    });
+
+    if (dayEntries.length > 0) {
+      lines.push(`${staff.name}: ${dayEntries.join(' | ')}`);
+    }
+  });
+
+  lines.push('');
+
+  // Coverage warnings
+  const coverageByDay = days.map(() => ({ z1: 0, z2: 0, z3: 0, z4: 0 }));
+  STAFF.forEach(staff => {
+    days.forEach((d, i) => {
+      if (isBankHoliday(d)) return;
+      const status = getStaffDayStatus(staff, d, rotWeek);
+      if (status.status === 'working') {
+        if (status.zone === 1) coverageByDay[i].z1++;
+        else if (status.zone === 2) coverageByDay[i].z2++;
+        else if (status.zone === 3) coverageByDay[i].z3++;
+        else if (status.zone === 4) coverageByDay[i].z4++;
+      }
+    });
+  });
+
+  let warnings = [];
+  days.forEach((d, i) => {
+    if (isBankHoliday(d)) return;
+    const c = coverageByDay[i];
+    const dName = dayNames[d.getDay()];
+    let w = [];
+    if (c.z2 < 3) w.push(`Z2 ${c.z2}/3`);
+    if (c.z1 < 1) w.push('Z1 empty');
+    if (c.z4 < 1) w.push('Z4 gap');
+    if (c.z3 < 1) w.push('Z3 gap');
+    if (w.length) warnings.push(`${dName}: ${w.join(', ')}`);
+  });
+
+  if (warnings.length) {
+    lines.push('Coverage flags:');
+    warnings.forEach(w => lines.push(`  ⚠ ${w}`));
+    lines.push('');
+  }
+
+  lines.push('—');
+  lines.push('Auto-generated by Dawkes Zone Rota tool');
+
+  preview.textContent = lines.join('\n');
+  preview.classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// BANK HOLIDAY FETCH (backup)
+// ═══════════════════════════════════════════════════════
+
+async function fetchBankHolidays() {
+  try {
+    const res = await fetch('https://www.gov.uk/bank-holidays.json');
+    const data = await res.json();
+    const events = data['england-and-wales'].events;
+    events.forEach(ev => {
+      if (ev.date.startsWith('2026')) {
+        bankHolidays.add(ev.date);
+      }
+    });
+    renderRota();
+  } catch(e) {
+    // Use hardcoded fallback — already loaded
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+function init() {
+  loadState();
+  currentMonday = getDefaultMonday();
+  renderRota();
+  fetchBankHolidays();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
