@@ -1,1 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dawkes Zone Rota</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink:#D83D96; --dark:#1a1a1a; --mid:#222; --card:#282828; --border:#363636;
+  --text:#f0f0f0; --muted:#888; --sub:#444;
+  --z1c:#7ab3f8; --z1b:rgba(58,123,213,.16); --z1e:rgba(58,123,213,.3);
+  --z2c:#5de08a; --z2b:rgba(39,174,96,.16);  --z2e:rgba(39,174,96,.3);
+  --z3c:#f5a55a; --z3b:rgba(230,126,34,.16); --z3e:rgba(230,126,34,.3);
+  --z4c:#cc99f5; --z4b:rgba(142,68,173,.16); --z4e:rgba(142,68,173,.3);
+  --red:#e74c3c; --amber:#f39c12;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;}
+.hdr{background:var(--mid);border-bottom:2px solid var(--pink);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50;}
+.brand{display:flex;align-items:baseline;gap:9px;}
+.bname{font-size:18px;font-weight:700;letter-spacing:-.5px;}
+.bname em{color:var(--pink);font-style:normal;}
+.btag{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+.hc{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.wnav{display:flex;align-items:center;gap:5px;}
+.wlbl{font-size:12px;font-weight:600;min-width:178px;text-align:center;}
+.btn{background:var(--card);color:var(--text);border:1px solid var(--border);padding:5px 11px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .13s;white-space:nowrap;}
+.btn:hover{background:#363636;border-color:#555;}
+.btn.pk{background:var(--pink);border-color:var(--pink);}
+.btn.pk:hover{background:#b82f80;}
+.btn.gh{background:transparent;border-color:var(--pink);color:var(--pink);}
+.btn.gh:hover{background:rgba(216,61,150,.1);}
+.btn.dr{background:transparent;border-color:var(--red);color:var(--red);}
+.btn.dr:hover{background:rgba(231,76,60,.1);}
+.covrow{background:var(--mid);border-bottom:1px solid var(--border);padding:6px 18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;}
+.clbl{color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+.cpill{padding:2px 8px;border-radius:20px;font-weight:700;font-size:10px;display:inline-flex;align-items:center;gap:3px;}
+.cok {background:rgba(39,174,96,.11); color:#5de08a; border:1px solid rgba(39,174,96,.22);}
+.cerr{background:rgba(231,76,60,.11); color:#f08070; border:1px solid rgba(231,76,60,.22);}
+.cwrn{background:rgba(243,156,18,.11);color:#f5b942; border:1px solid rgba(243,156,18,.22);}
+.ccls{background:#1e1e1e;color:#555;border:1px solid #2a2a2a;}
+.wstrip{color:var(--red);font-weight:600;margin-left:4px;font-size:11px;}
+.banner{display:none;margin:10px 18px 0;padding:8px 13px;border-radius:8px;font-size:11px;align-items:center;gap:7px;}
+.banner.on{display:flex;}
+.bwarn{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.2);color:#d07060;}
+.binfo{background:rgba(58,123,213,.07);border:1px solid rgba(58,123,213,.2);color:#7ab3f8;}
+.main{padding:12px 18px 20px;}
+.panel{display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.panel.on{display:block;}
+.ph{font-size:11px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.6px;margin-bottom:11px;}
+.ph2{font-size:11px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 9px;}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:9px;margin-bottom:11px;}
+.sf label{display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.sf input,.sf select{width:100%;background:var(--dark);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;}
+.sf input:focus,.sf select:focus{outline:none;border-color:var(--pink);}
+.sf.wide{grid-column:1/-1;}
+.capnote{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.pac{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px;}
+.stwrap{overflow-x:auto;margin-bottom:10px;}
+.stbl{width:100%;border-collapse:collapse;font-size:11px;}
+.stbl th{background:#1e1e1e;padding:6px 7px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap;}
+.stbl td{padding:4px 5px;border-bottom:1px solid #2c2c2c;vertical-align:middle;}
+.stbl tr:hover td{background:rgba(255,255,255,.012);}
+.stbl input,.stbl select{background:var(--dark);border:1px solid var(--border);color:var(--text);padding:3px 6px;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:11px;}
+.stbl input:focus,.stbl select:focus{outline:none;border-color:var(--pink);}
+.hint{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;}
+.rotnote{background:rgba(216,61,150,.07);border:1px solid rgba(216,61,150,.15);border-radius:8px;padding:10px 13px;font-size:11px;color:#e880c5;margin-bottom:12px;line-height:1.6;}
+.epre{display:none;background:#1e1e1e;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;font-family:monospace;font-size:11px;color:var(--text);white-space:pre-wrap;line-height:1.7;max-height:360px;overflow-y:auto;}
+.epre.on{display:block;}
+.rwrap{overflow-x:auto;}
+.rt{width:100%;border-collapse:collapse;min-width:560px;}
+.rt th{background:#1e1e1e;padding:8px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);text-align:center;border-bottom:2px solid var(--border);}
+.rt th.nc{text-align:left;padding-left:13px;min-width:130px;}
+.rt th.dc{min-width:86px;}
+.rt td{padding:3px 3px;border-bottom:1px solid #252525;text-align:center;vertical-align:middle;}
+.rt td.nc{text-align:left;padding-left:13px;}
+.rt tr:hover td{background:rgba(255,255,255,.01);}
+.sname{font-size:12px;font-weight:600;}
+.spat{font-size:10px;color:var(--muted);}
+/* event indicator row */
+.rt tr.evtrow td{padding:0;border-bottom:2px solid var(--border);background:transparent;}
+.rt tr.evtrow:hover td{background:transparent;}
+.evtrow td.nc{padding-left:13px;}
+.evt-cell{display:flex;flex-wrap:wrap;gap:3px;padding:3px 2px;min-height:4px;}
+.evt-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;background:rgba(241,196,15,.13);color:#c9a227;border:1px solid rgba(241,196,15,.25);white-space:nowrap;}
+.evt-offsite{background:rgba(216,61,150,.13);color:#e880c5;border-color:rgba(216,61,150,.3);}
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:all .13s;white-space:nowrap;user-select:none;min-width:52px;}
+.badge:hover{filter:brightness(1.2);transform:scale(1.04);}
+.bz1    {background:var(--z1b);color:var(--z1c);border-color:var(--z1e);}
+.bz2    {background:var(--z2b);color:var(--z2c);border-color:var(--z2e);}
+.bz3    {background:var(--z3b);color:var(--z3c);border-color:var(--z3e);}
+.bz4    {background:var(--z4b);color:var(--z4c);border-color:var(--z4e);}
+.blead  {background:rgba(216,61,150,.2);color:var(--pink);border-color:rgba(216,61,150,.45);box-shadow:0 0 8px rgba(216,61,150,.15);}
+.boff   {background:transparent;color:#3a3a3a;border-color:#272727;cursor:default;font-weight:400;font-size:10px;}
+.boff:hover{filter:none;transform:none;}
+.boff.clickable{cursor:pointer;color:#555;border-color:#383838;}
+.boff.clickable:hover{filter:brightness(1.5);transform:scale(1.04);}
+.bdoff  {background:rgba(243,156,18,.05);color:#5a5a5a;border:2px dashed rgba(243,156,18,.2);cursor:pointer;font-weight:400;font-size:10px;}
+.bclosed{background:#1e1e1e;color:#404040;border-color:#242424;cursor:default;font-size:10px;font-weight:500;}
+.bclosed:hover{filter:none;transform:none;}
+.bsick  {background:rgba(231,76,60,.13);color:#e74c3c;border-color:rgba(231,76,60,.3);}
+.bhol   {background:rgba(241,196,15,.09);color:#c9a227;border-color:rgba(241,196,15,.22);font-style:italic;}
+.brescue{background:var(--z3b);color:var(--z3c);border:2px dashed var(--z3e);}
+.leg{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 18px;background:var(--mid);border-top:1px solid var(--border);font-size:11px;}
+.li{display:flex;align-items:center;gap:5px;color:var(--muted);}
+.ld{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;}
+.overlay.on{display:flex;}
+.modal{background:#242424;border:1px solid var(--border);border-radius:11px;padding:20px;min-width:260px;max-width:330px;width:90vw;box-shadow:0 22px 55px rgba(0,0,0,.5);}
+.modal h3{font-size:14px;font-weight:700;margin-bottom:3px;}
+.msub{font-size:11px;color:var(--muted);margin-bottom:13px;}
+.mopts{display:flex;flex-direction:column;gap:6px;margin-bottom:13px;}
+.mbtn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:7px;text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .13s;}
+.mbtn:hover{background:#383838;border-color:var(--pink);}
+.mbtn.red{color:var(--red);}
+.mbtn.red:hover{border-color:var(--red);background:rgba(231,76,60,.09);}
+.mbtn.dim{color:var(--muted);}
+.mbtn.dim:hover{border-color:#555;}
+.mcanc{width:100%;background:transparent;border:1px solid #383838;color:var(--muted);padding:7px;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;}
+.mcanc:hover{border-color:#555;color:var(--text);}
+.foot{padding:8px 18px;font-size:10px;color:var(--sub);border-top:1px solid var(--border);text-align:center;}
+@media print{
+  body{background:#fff;color:#000;}
+  .hdr{background:#fff;border-bottom:2px solid #D83D96;color:#000;position:static;}
+  .bname{color:#000;}
+  .hc,.covrow,.leg,.overlay,.panel,.epre,.banner,.foot{display:none!important;}
+  .rt th{background:#f5f5f5;color:#333;border-bottom:2px solid #ddd;}
+  .rt td{border-bottom:1px solid #eee;}
+  .badge{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .evt-pill{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .rwrap{overflow:visible;}
+}
+</style>
+</head>
+<body>
 
+<div class="hdr">
+  <div class="brand">
+    <div class="bname">dawk<em>e</em>s</div>
+    <div class="btag">Zone Rota</div>
+  </div>
+  <div class="hc">
+    <div class="wnav">
+      <button class="btn" onclick="changeWeek(-1)">&#8592;</button>
+      <div class="wlbl" id="wlbl"></div>
+      <button class="btn" onclick="changeWeek(1)">&#8594;</button>
+    </div>
+    <button class="btn" onclick="goToday()">Today</button>
+    <button class="btn gh" onclick="togglePanel('pSettings')">&#9881; Settings</button>
+    <button class="btn gh" onclick="togglePanel('pStaff')">&#128101; Staff</button>
+    <button class="btn gh" onclick="toggleEmail()">&#9993; Email</button>
+    <button class="btn gh" onclick="window.print()">&#128424; Print</button>
+  </div>
+</div>
+
+<div class="covrow">
+  <span class="clbl">Coverage</span>
+  <span id="covPills"></span>
+  <span id="covWarns"></span>
+</div>
+
+<div class="banner bwarn" id="bnrRescue"></div>
+<div class="banner binfo" id="bnrRotation"></div>
+
+<div class="main">
+
+  <div class="panel" id="pSettings">
+    <div class="ph">Zone capacity and rules</div>
+    <div class="sg">
+      <div class="sf">
+        <label>Zone 1 max people</label>
+        <input type="number" id="cfgZ1Cap" min="1" max="6" value="2" oninput="saveCfg();renderRota();">
+        <div class="capnote">Physical max. Overflow to Zone 2.</div>
+      </div>
+      <div class="sf">
+        <label>Zone 2 max people</label>
+        <input type="number" id="cfgZ2Cap" min="1" max="6" value="3" oninput="saveCfg();renderRota();">
+        <div class="capnote">Physical max. Overflow to Zone 1.</div>
+      </div>
+      <div class="sf">
+        <label>Zone 2 warn if below</label>
+        <input type="number" id="cfgZ2Min" min="0" max="4" value="2" oninput="saveCfg();renderRota();">
+      </div>
+      <div class="sf">
+        <label>Zone 1 warn if below</label>
+        <input type="number" id="cfgZ1Min" min="0" max="4" value="1" oninput="saveCfg();renderRota();">
+      </div>
+      <div class="sf">
+        <label>Zone 3 rescue from Z2?</label>
+        <select id="cfgZ3Rescue" onchange="saveCfg();renderRota();">
+          <option value="1">Yes - pull from Z2 if empty</option>
+          <option value="0">No - flag gap only</option>
+        </select>
+        <div class="capnote">Moves lowest-priority Z3-capable person from Z2.</div>
+      </div>
+      <div class="sf">
+        <label>Zone 4 warn if below</label>
+        <input type="number" id="cfgZ4Min" min="0" max="2" value="1" oninput="saveCfg();renderRota();">
+      </div>
+      <div class="sf wide">
+        <label>Email subject line</label>
+        <input type="text" id="cfgSubject" placeholder="Zone Rota - w/c [date]" oninput="saveCfg();">
+      </div>
+    </div>
+    <div class="ph2">Team email addresses</div>
+    <div class="sg" id="emailFields"></div>
+    <div class="pac">
+      <button class="btn pk" onclick="closePanel()">Done</button>
+      <button class="btn dr" onclick="clearOverrides()">Clear all overrides</button>
+    </div>
+  </div>
+
+  <div class="panel" id="pStaff">
+    <div class="ph">Team - add, edit or remove people</div>
+    <div class="rotnote">
+      <strong>Tibor and Josh - 2-week rotation</strong><br>
+      Week A: Tibor Zone 3, Josh Zone 4 &nbsp;|&nbsp; Week B: Tibor Zone 4, Josh Zone 3<br>
+      Epoch (Week A): w/c 13 April 2026<br>
+      <strong>When a new person joins</strong> who can independently hold Z3 or Z4, the 3-week rotation restarts and will include a Zone 2 week and training flag for Tibor and Josh.
+    </div>
+    <div class="stwrap">
+      <table class="stbl">
+        <thead>
+          <tr>
+            <th>Name</th><th>Pattern</th>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+            <th>Regular day off</th>
+            <th>Default zone</th><th>Z3 capable</th><th>Sales Lead</th><th>Rotation</th>
+            <th>Priority</th><th>Active</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="staffTbody"></tbody>
+      </table>
+    </div>
+    <div class="pac">
+      <button class="btn pk" onclick="addStaff()">+ Add person</button>
+      <button class="btn" onclick="saveStaffAndClose()">Done</button>
+    </div>
+    <div class="hint">Sales Lead = shows pink lead badge instead of zone badge (Jon on Saturdays). Z3 capable = can cover QC rescue. Rotation = tibor or josh only. Priority: lower number placed first.</div>
+  </div>
+
+  <div class="epre" id="emailPre"></div>
+
+  <div class="rwrap">
+    <table class="rt">
+      <thead id="rotaHead"></thead>
+      <tbody id="rotaBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="leg">
+  <span class="li"><span class="ld" style="background:var(--z1c)"></span>Zone 1</span>
+  <span class="li"><span class="ld" style="background:var(--z2c)"></span>Zone 2 (max 3)</span>
+  <span class="li"><span class="ld" style="background:var(--z3c)"></span>Zone 3</span>
+  <span class="li"><span class="ld" style="background:var(--z4c)"></span>Zone 4</span>
+  <span class="li"><span class="ld" style="background:var(--pink)"></span>Sales Lead</span>
+  <span class="li"><span class="ld" style="background:var(--z3c);outline:2px dashed var(--z3e);outline-offset:1px;"></span>Z3 rescue</span>
+  <span class="li"><span class="ld" style="background:rgba(241,196,15,.4)"></span>Event / evening</span>
+  <span class="li" style="color:var(--muted)">Click any badge to override · Click blank to add</span>
+</div>
+
+<div class="foot">Dawkes Music and Windcraft - Zone Rota - Owned by Alison - Reviewed with Matt - Changes auto-saved</div>
+
+<div class="overlay" id="overlay" onclick="overlayClick(event)">
+  <div class="modal">
+    <h3 id="mTitle"></h3>
+    <div class="msub" id="mSub"></div>
+    <div class="mopts" id="mOpts"></div>
+    <button class="mcanc" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── BANK HOLIDAYS ──────────────────────────────
+var BH = new Set([
+  '2026-01-01','2026-04-03','2026-04-06','2026-05-04',
+  '2026-05-25','2026-08-31','2026-12-25','2026-12-26'
+]);
+(async function(){
+  try {
+    var r = await fetch('https://www.gov.uk/bank-holidays.json');
+    var d = await r.json();
+    d['england-and-wales'].events.forEach(function(e){
+      if(e.date.startsWith('2026')) BH.add(e.date);
+    });
+    renderRota();
+  } catch(e){}
+})();
+
+// ── ROTATION ───────────────────────────────────
+// TWO-WEEK CYCLE. Epoch = w/c Mon 13 Apr 2026 = Week A (0)
+// WkA: Tibor->Z3, Josh->Z4
+// WkB: Tibor->Z4, Josh->Z3
+// NOTE: when a new hire can hold Z3 or Z4 independently, switch to
+// 3-week rotation with Z2 week + training flag. Reset epoch at that point.
+var ROT_EPOCH = new Date(2026,3,13);
+var ROT = [
+  {tibor:3, josh:4},  // Week A
+  {tibor:4, josh:3}   // Week B
+];
+function rotWeek(mon){
+  var ep = mondayOf(ROT_EPOCH);
+  var w  = Math.round((mon - ep) / 604800000);
+  return ((w % 2) + 2) % 2;
+}
+
+// ── EVENTS (floor-relevant, changes end-of-day) ─
+// Format: 'YYYY-MM-DD' -> [{label, offsite}]
+// offsite = true means someone from the team is away from the floor
+var EVENTS = {
+  '2026-04-25': [{label:'Open Mic Night', offsite:false}],
+  '2026-05-05': [{label:'Bass Face - Clare Martin & Laurence Cottle', offsite:false}],
+  '2026-05-09': [{label:'Sax & Clarinet Weekend day 1', offsite:false}],
+  '2026-05-14': [{label:'Groove Collective', offsite:false}],
+  '2026-05-15': [{label:'Azure Showcase (external)', offsite:false}],
+  '2026-05-30': [{label:'BFS Trade Stand - Jon off-site', offsite:true}]
+};
+
+// ── DEFAULT STAFF ──────────────────────────────
+var DEFAULT_STAFF = [
+  {id:'jon',   name:'Jon',   pattern:'Saturdays - Sales Lead',         works:[6],      regularOff:[],  defaultZone:2, z3capable:false, salesLead:true,  rotation:'', priority:0, active:true},
+  {id:'alison',name:'Alison',pattern:'Mon-Fri, Zone 1, 9:15-15:15',   works:[1,2,3,4,5],regularOff:[6],defaultZone:1, z3capable:false, salesLead:false, rotation:'', priority:1, active:true},
+  {id:'matt',  name:'Matt',  pattern:'Mon-Fri, Zone 2',                works:[1,2,3,4,5],regularOff:[6],defaultZone:2, z3capable:true,  salesLead:false, rotation:'', priority:2, active:true},
+  {id:'chris', name:'Chris', pattern:'Mon-Sat (Fri off), Zone 2',      works:[1,2,3,4,5,6],regularOff:[5],defaultZone:2,z3capable:true, salesLead:false, rotation:'', priority:3, active:true},
+  {id:'tibor', name:'Tibor', pattern:'Mon-Sat (Tue off), rotation',    works:[1,2,3,4,5,6],regularOff:[2],defaultZone:3,z3capable:true, salesLead:false, rotation:'tibor',priority:4,active:true},
+  {id:'josh',  name:'Josh',  pattern:'Mon-Sat (Thu off), rotation',    works:[1,2,3,4,5,6],regularOff:[4],defaultZone:4,z3capable:true, salesLead:false, rotation:'josh', priority:5, active:true},
+  {id:'carl',  name:'Carl',  pattern:'Mon, Tue, Sat',                  works:[1,2,6],  regularOff:[],  defaultZone:2, z3capable:false, salesLead:false, rotation:'', priority:6, active:true},
+  {id:'adam',  name:'Adam',  pattern:'Mon-Sat (Sat off)',              works:[1,2,3,4,5,6],regularOff:[6],defaultZone:2,z3capable:false,salesLead:false, rotation:'', priority:7, active:true},
+  {id:'olivia',name:'Olivia',pattern:'Wed, Fri, Sat',                  works:[3,5,6],  regularOff:[],  defaultZone:1, z3capable:true,  salesLead:false, rotation:'', priority:8, active:true},
+  {id:'elena', name:'Elena', pattern:'Saturdays only',                 works:[6],      regularOff:[],  defaultZone:2, z3capable:true,  salesLead:false, rotation:'', priority:9, active:true},
+  {id:'immy',  name:'Immy',  pattern:'Ad hoc',                        works:[],       regularOff:[],  defaultZone:2, z3capable:false, salesLead:false, rotation:'', priority:10,active:true}
+];
+
+// ── KNOWN ABSENCES ─────────────────────────────
+var ABSENCES = {
+  '2026-04-11':['adam'],
+  '2026-04-17':['josh'],
+  '2026-04-18':['adam','olivia'],
+  '2026-05-23':['adam'],
+  '2026-05-30':['jon'],
+  '2026-06-05':['tibor'],'2026-06-06':['tibor'],'2026-06-07':['tibor'],
+  '2026-06-08':['tibor'],'2026-06-09':['tibor'],'2026-06-10':['tibor'],
+  '2026-06-11':['tibor'],'2026-06-12':['tibor'],'2026-06-13':['tibor']
+};
+
+// ── KNOWN EXTRAS ───────────────────────────────
+var EXTRAS = {
+  '2026-04-07':['immy'],'2026-04-08':['immy'],'2026-04-09':['immy'],
+  '2026-04-10':['immy'],'2026-04-11':['immy'],
+  '2026-04-16':['adam'],
+  '2026-04-20':['olivia'],'2026-04-21':['carl'],
+  '2026-04-23':['adam'],'2026-04-28':['carl'],'2026-04-30':['adam']
+};
+
+// ── STATE ──────────────────────────────────────
+var LS_KEY = 'dawkes_rota_v5';
+var S = {
+  overrides:{}, emails:{}, staff:null,
+  cfg:{z1cap:2,z2cap:3,z1min:1,z2min:2,z3rescue:true,z4min:1,subject:''}
+};
+function loadState(){
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      var saved = JSON.parse(raw);
+      if(saved.cfg) saved.cfg = Object.assign({},S.cfg,saved.cfg);
+      Object.assign(S,saved);
+    }
+  } catch(e){}
+  if(!S.staff) S.staff = JSON.parse(JSON.stringify(DEFAULT_STAFF));
+}
+function saveState(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(S)); }catch(e){} }
+function getStaff(){ return S.staff || DEFAULT_STAFF; }
+
+// ── DATE HELPERS ───────────────────────────────
+function mondayOf(d){
+  var x=new Date(d); x.setHours(0,0,0,0);
+  var dow=x.getDay();
+  x.setDate(x.getDate()+(dow===0?-6:1-dow));
+  return x;
+}
+function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmtDate(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function isBH(d){ return BH.has(fmtDate(d)); }
+var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function weekLabel(mon){
+  var sat=addDays(mon,5);
+  if(mon.getMonth()===sat.getMonth())
+    return 'w/c '+mon.getDate()+' '+MN[mon.getMonth()]+' '+mon.getFullYear();
+  return mon.getDate()+' '+MN[mon.getMonth()]+' - '+sat.getDate()+' '+MN[sat.getMonth()]+' '+mon.getFullYear();
+}
+function dayLabel(d){ return DN[d.getDay()]+' '+d.getDate()+' '+MN[d.getMonth()]; }
+
+// ── ROTA LOGIC ─────────────────────────────────
+function computeDay(date){
+  var d=fmtDate(date), dow=date.getDay();
+  var rw=rotWeek(mondayOf(date)), rot=ROT[rw];
+  var cfg=S.cfg;
+  var allStaff=getStaff().filter(function(s){return s.active;});
+  var available=[], nonWorking=[];
+
+  allStaff.forEach(function(s){
+    var ovKey=s.id+'|'+d, ov=S.overrides[ovKey];
+    if(ov){
+      if(ov.type==='off'||ov.type==='sick'||ov.type==='hol'){nonWorking.push({s:s,status:ov.type});return;}
+      if(ov.type==='zone'){available.push({s:s,rawZone:ov.zone});return;}
+      if(ov.type==='extra'){available.push({s:s,rawZone:ov.zone||s.defaultZone});return;}
+    }
+    if((ABSENCES[d]||[]).indexOf(s.id)>=0){nonWorking.push({s:s,status:'hol'});return;}
+    // Ad hoc (empty works)
+    if(s.works.length===0){
+      if((EXTRAS[d]||[]).indexOf(s.id)>=0) available.push({s:s,rawZone:s.defaultZone});
+      return;
+    }
+    var isExtra=(EXTRAS[d]||[]).indexOf(s.id)>=0;
+    var isWorkDay=s.works.indexOf(dow)>=0;
+    var isDayOff=s.regularOff.indexOf(dow)>=0;
+    if(!isWorkDay&&!isExtra) return;
+    if(isDayOff&&!isExtra){nonWorking.push({s:s,status:'dayoff'});return;}
+    var rawZone=s.rotation==='tibor'?rot.tibor:s.rotation==='josh'?rot.josh:s.defaultZone;
+    available.push({s:s,rawZone:rawZone});
+  });
+
+  // Place in priority order respecting caps
+  available.sort(function(a,b){return a.s.priority-b.s.priority;});
+  var counts={1:0,2:0,3:0,4:0};
+  var placed=[];
+
+  available.forEach(function(x){
+    var zone=x.rawZone;
+    // Sales leads bypass the cap check — they're floor lead, not a zone slot
+    if(!x.s.salesLead){
+      if(zone===2&&counts[2]>=cfg.z2cap) zone=1;
+      if(zone===1&&counts[1]>=cfg.z1cap) zone=2;
+    }
+    counts[zone]=(counts[zone]||0)+1;
+    placed.push({s:x.s,zone:zone,status:'working',rawZone:x.rawZone});
+  });
+
+  // Z3 rescue: if Z3 empty, pull lowest-priority Z3-capable from Z2
+  if(cfg.z3rescue&&(counts[3]||0)===0){
+    var cands=placed.filter(function(p){return p.zone===2&&p.s.z3capable&&!p.s.salesLead;});
+    cands.sort(function(a,b){return b.s.priority-a.s.priority;});
+    if(cands.length>0){
+      cands[0].zone=3; cands[0].status='rescued';
+      counts[2]--; counts[3]++;
+    }
+  }
+
+  return {placed:placed,nonWorking:nonWorking,counts:counts,rw:rw,rot:rot};
+}
+
+// ── RENDER ─────────────────────────────────────
+var currentMonday;
+
+function defaultMonday(){
+  var target=new Date(2026,3,7);
+  var today=new Date(); today.setHours(0,0,0,0);
+  return mondayOf(today>target?today:target);
+}
+function changeWeek(n){ currentMonday=addDays(currentMonday,n*7); renderRota(); }
+function goToday()    { currentMonday=mondayOf(new Date()); renderRota(); }
+
+function renderRota(){
+  var days=[]; for(var i=0;i<6;i++) days.push(addDays(currentMonday,i));
+  document.getElementById('wlbl').textContent=weekLabel(currentMonday);
+
+  // Head
+  var hh='<tr><th class="nc">Team member</th>';
+  days.forEach(function(d){
+    var bh=isBH(d);
+    hh+='<th class="dc"'+(bh?' style="color:var(--red)"':'')+'>'+dayLabel(d)+(bh?'<br><span style="font-size:9px">CLOSED</span>':'')+'</th>';
+  });
+  hh+='</tr>';
+  document.getElementById('rotaHead').innerHTML=hh;
+
+  var dayData=days.map(function(d){return isBH(d)?null:computeDay(d);});
+
+  // Rotation banner
+  var firstData=null;
+  for(var i=0;i<dayData.length;i++){if(dayData[i]){firstData=dayData[i];break;}}
+  var bnrRot=document.getElementById('bnrRotation');
+  if(firstData){
+    var rot=firstData.rot, rw=firstData.rw;
+    bnrRot.textContent='Rotation Week '+(rw===0?'A':'B')+' - Tibor: Zone '+rot.tibor+', Josh: Zone '+rot.josh;
+    bnrRot.classList.add('on');
+  } else { bnrRot.classList.remove('on'); }
+
+  // Rescue banner
+  var anyRescue=dayData.some(function(r){
+    return r&&r.placed.some(function(p){return p.status==='rescued';});
+  });
+  var bnrR=document.getElementById('bnrRescue');
+  if(anyRescue){
+    bnrR.textContent='Z3 rescue active this week - someone moved from Zone 2 to Zone 3 on one or more days. Check dashed badges.';
+    bnrR.classList.add('on');
+  } else { bnrR.classList.remove('on'); }
+
+  var staff=getStaff().filter(function(s){return s.active;});
+  var bh='';
+
+  // Events row first (before staff rows)
+  bh+='<tr class="evtrow"><td class="nc"><div style="font-size:9px;color:var(--muted);padding:3px 0;font-weight:600;text-transform:uppercase;letter-spacing:.4px;">Events</div></td>';
+  days.forEach(function(d){
+    var dstr=fmtDate(d);
+    var evts=EVENTS[dstr]||[];
+    bh+='<td>';
+    if(evts.length>0){
+      bh+='<div class="evt-cell">';
+      evts.forEach(function(ev){
+        bh+='<span class="evt-pill'+(ev.offsite?' evt-offsite':'')+'">'+ev.label+'</span>';
+      });
+      bh+='</div>';
+    }
+    bh+='</td>';
+  });
+  bh+='</tr>';
+
+  // Staff rows
+  staff.forEach(function(s){
+    var showRow=days.some(function(d,i){
+      if(isBH(d)) return false;
+      var r=dayData[i];
+      return !!(r.placed.find(function(x){return x.s.id===s.id;})
+             || r.nonWorking.find(function(x){return x.s.id===s.id;}));
+    });
+    // Ad hoc: only if present. Others: always show if they could work this week
+    var couldWork=s.works.some(function(dow){
+      return days.some(function(d){return !isBH(d)&&d.getDay()===dow;});
+    });
+    if(s.works.length===0&&!showRow) return;
+    if(s.works.length>0&&!showRow&&!couldWork) return;
+
+    bh+='<tr>';
+    bh+='<td class="nc"><div class="sname">'+s.name+'</div><div class="spat">'+s.pattern+'</div></td>';
+
+    days.forEach(function(d,i){
+      var dstr=fmtDate(d);
+      if(isBH(d)){bh+='<td><span class="badge bclosed">Closed</span></td>';return;}
+
+      var r=dayData[i];
+      var pl=r.placed.find(function(x){return x.s.id===s.id;});
+      var nw=r.nonWorking.find(function(x){return x.s.id===s.id;});
+
+      if(pl){
+        var z=pl.zone, cls, lbl;
+        if(s.salesLead){
+          cls='blead'; lbl='Lead';
+        } else if(pl.status==='rescued'){
+          cls='brescue'; lbl='Z3 cover';
+        } else {
+          cls='bz'+z; lbl='Zone '+z;
+        }
+        bh+='<td><span class="badge '+cls+'" onclick="openModal(\''+s.id+'\',\''+dstr+'\',\''+s.name+'\')">'+lbl+'</span></td>';
+      } else if(nw){
+        var st=nw.status;
+        if(st==='hol')    bh+='<td><span class="badge bhol"  onclick="openModal(\''+s.id+'\',\''+dstr+'\',\''+s.name+'\')">HOL</span></td>';
+        else if(st==='sick')bh+='<td><span class="badge bsick" onclick="openModal(\''+s.id+'\',\''+dstr+'\',\''+s.name+'\')">Sick</span></td>';
+        else if(st==='off')bh+='<td><span class="badge boff"  onclick="openModal(\''+s.id+'\',\''+dstr+'\',\''+s.name+'\')">Off</span></td>';
+        else               bh+='<td><span class="badge bdoff" onclick="openModal(\''+s.id+'\',\''+dstr+'\',\''+s.name+'\')">Day off</span></td>';
+      } else {
+        // Blank - clickable to add as extra day
+        bh+='<td><span class="badge boff clickable" onclick="openModal(\''+s.id+'\',\''+dstr+'\',\''+s.name+'\')" title="Click to add">+</span></td>';
+      }
+    });
+    bh+='</tr>';
+  });
+
+  document.getElementById('rotaBody').innerHTML=bh;
+  renderCoverage(days,dayData);
+}
+
+function renderCoverage(days,dayData){
+  var cfg=S.cfg, pills='', warns=[];
+  days.forEach(function(d,i){
+    if(isBH(d)){pills+='<span class="cpill ccls">'+DN[d.getDay()]+'</span> ';return;}
+    var c=dayData[i].counts, name=DN[d.getDay()];
+    var cls='cok', dw=[];
+    if((c[2]||0)<cfg.z2min){cls='cerr';dw.push('Z2:'+(c[2]||0));}
+    if((c[1]||0)<cfg.z1min){if(cls!=='cerr')cls='cwrn';dw.push('Z1 low');}
+    if((c[3]||0)<1)        {cls='cerr';dw.push('Z3!');}
+    if((c[4]||0)<cfg.z4min){if(cls==='cok')cls='cwrn';dw.push('Z4 gap');}
+    var icon=cls==='cok'?'OK':cls==='cerr'?'X':'!';
+    pills+='<span class="cpill '+cls+'" title="Z1:'+(c[1]||0)+' Z2:'+(c[2]||0)+' Z3:'+(c[3]||0)+' Z4:'+(c[4]||0)+'">'+icon+' '+name+'</span> ';
+    if(dw.length) warns.push(name+': '+dw.join(', '));
+  });
+  document.getElementById('covPills').innerHTML=pills;
+  document.getElementById('covWarns').innerHTML=warns.length?'<span class="wstrip">Warning: '+warns.join(' / ')+'</span>':'';
+}
+
+// ── MODAL ──────────────────────────────────────
+var mCtx=null;
+function openModal(staffId,dstr,staffName){
+  mCtx={staffId:staffId,dstr:dstr};
+  document.getElementById('mTitle').textContent=staffName;
+  var parts=dstr.split('-');
+  var dateObj=new Date(+parts[0],+parts[1]-1,+parts[2]);
+  document.getElementById('mSub').textContent=DN[dateObj.getDay()]+' '+dateObj.getDate()+' '+MN[dateObj.getMonth()];
+  var hasOv=!!S.overrides[staffId+'|'+dstr];
+
+  // Check if this is a blank (not scheduled) - offer "add as extra" first
+  var r=null;
+  var days=[]; for(var i=0;i<6;i++) days.push(addDays(currentMonday,i));
+  for(var i=0;i<days.length;i++){
+    if(fmtDate(days[i])===dstr&&!isBH(days[i])){r=computeDay(days[i]);break;}
+  }
+  var isBlank=r&&!r.placed.find(function(x){return x.s.id===staffId;})
+               &&!r.nonWorking.find(function(x){return x.s.id===staffId;});
+
+  var html='';
+  if(isBlank){
+    html+='<button class="mbtn pk" onclick="applyOv(\'extra\',2)">Add as extra day - Zone 2</button>';
+    html+='<button class="mbtn" onclick="applyOv(\'extra\',1)">Add as extra day - Zone 1</button>';
+    html+='<button class="mbtn" onclick="applyOv(\'extra\',3)">Add as extra day - Zone 3</button>';
+    html+='<button class="mbtn" onclick="applyOv(\'extra\',4)">Add as extra day - Zone 4</button>';
+  } else {
+    [1,2,3,4].forEach(function(z){
+      html+='<button class="mbtn" onclick="applyOv(\'zone\','+z+')">Move to Zone '+z+'</button>';
+    });
+    html+='<button class="mbtn" onclick="applyOv(\'hol\')">Mark as holiday</button>';
+    html+='<button class="mbtn red" onclick="applyOv(\'sick\')">Mark as sick</button>';
+    html+='<button class="mbtn" onclick="applyOv(\'off\')">Mark as extra day off</button>';
+  }
+  if(hasOv) html+='<button class="mbtn dim" onclick="applyOv(\'reset\')">Reset to default</button>';
+  document.getElementById('mOpts').innerHTML=html;
+  document.getElementById('overlay').classList.add('on');
+}
+
+function applyOv(type,zone){
+  if(!mCtx) return;
+  var key=mCtx.staffId+'|'+mCtx.dstr;
+  if(type==='reset')      delete S.overrides[key];
+  else if(type==='zone')  S.overrides[key]={type:'zone',zone:zone};
+  else if(type==='extra') S.overrides[key]={type:'extra',zone:zone||2};
+  else                    S.overrides[key]={type:type};
+  saveState(); closeModal(); renderRota();
+}
+function overlayClick(e){if(e.target===document.getElementById('overlay'))closeModal();}
+function closeModal(){document.getElementById('overlay').classList.remove('on');mCtx=null;}
+function clearOverrides(){
+  if(confirm('Clear all manual overrides? This cannot be undone.')){
+    S.overrides={}; saveState(); renderRota();
+  }
+}
+
+// ── SETTINGS ───────────────────────────────────
+function togglePanel(id){
+  var el=document.getElementById(id);
+  var open=el.classList.contains('on');
+  // Close all panels first
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  if(!open){
+    // Opening - populate and show
+    if(id==='pSettings') renderSettingsPanel();
+    if(id==='pStaff')    renderStaffTable();
+    el.classList.add('on');
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+  } else {
+    // Closing - scroll back to rota
+    var rota=document.getElementById('rotaBody');
+    if(rota) rota.closest('.rwrap').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+function closePanel(){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderSettingsPanel(){
+  var c=S.cfg;
+  document.getElementById('cfgZ1Cap').value   =c.z1cap;
+  document.getElementById('cfgZ2Cap').value   =c.z2cap;
+  document.getElementById('cfgZ1Min').value   =c.z1min;
+  document.getElementById('cfgZ2Min').value   =c.z2min;
+  document.getElementById('cfgZ3Rescue').value=c.z3rescue?'1':'0';
+  document.getElementById('cfgZ4Min').value   =c.z4min;
+  document.getElementById('cfgSubject').value =c.subject||'';
+  var ef='';
+  getStaff().filter(function(s){return s.active;}).forEach(function(s){
+    var val=S.emails[s.id]||'';
+    ef+='<div class="sf"><label>'+s.name+'</label><input type="email" value="'+val+'" placeholder="'+s.name.toLowerCase()+'@dawkes.co.uk" oninput="S.emails[\''+s.id+'\']=this.value;saveState();"></div>';
+  });
+  document.getElementById('emailFields').innerHTML=ef;
+}
+function saveCfg(){
+  var c=S.cfg;
+  c.z1cap   =+document.getElementById('cfgZ1Cap').value||2;
+  c.z2cap   =+document.getElementById('cfgZ2Cap').value||3;
+  c.z1min   =+document.getElementById('cfgZ1Min').value;
+  c.z2min   =+document.getElementById('cfgZ2Min').value;
+  c.z3rescue=document.getElementById('cfgZ3Rescue').value==='1';
+  c.z4min   =+document.getElementById('cfgZ4Min').value;
+  c.subject =document.getElementById('cfgSubject').value;
+  saveState();
+}
+
+// ── STAFF ADMIN ────────────────────────────────
+var WDAYS=[{n:1,l:'Mon'},{n:2,l:'Tue'},{n:3,l:'Wed'},{n:4,l:'Thu'},{n:5,l:'Fri'},{n:6,l:'Sat'}];
+function renderStaffTable(){
+  var staff=getStaff(), rows='';
+  staff.forEach(function(s,idx){
+    var dayCells=WDAYS.map(function(wd){
+      var chk=s.works.indexOf(wd.n)>=0?'checked':'';
+      return '<td><input type="checkbox" '+chk+' onchange="staffToggleDay('+idx+','+wd.n+',this.checked)" style="accent-color:var(--pink);cursor:pointer;width:14px;height:14px;"></td>';
+    }).join('');
+    var offOpts=WDAYS.map(function(wd){
+      var sel=s.regularOff.indexOf(wd.n)>=0?'selected':'';
+      return '<option value="'+wd.n+'" '+sel+'>'+wd.l+'</option>';
+    }).join('');
+    var rotOpts=['','tibor','josh'].map(function(v){
+      return '<option value="'+v+'"'+(s.rotation===v?' selected':'')+'>'+(v||'none')+'</option>';
+    }).join('');
+    rows+='<tr>'+
+      '<td><input style="min-width:70px;" type="text" value="'+s.name+'" onchange="staffField('+idx+',\'name\',this.value)"></td>'+
+      '<td><input style="min-width:120px;" type="text" value="'+s.pattern+'" onchange="staffField('+idx+',\'pattern\',this.value)"></td>'+
+      dayCells+
+      '<td><select multiple size="2" style="min-width:60px;height:40px;" onchange="staffSetOff('+idx+',this)">'+offOpts+'</select></td>'+
+      '<td><select onchange="staffField('+idx+',\'defaultZone\',+this.value)">'+
+        [1,2,3,4].map(function(z){return '<option value="'+z+'"'+(s.defaultZone===z?' selected':'')+'>Z'+z+'</option>';}).join('')+
+      '</select></td>'+
+      '<td style="text-align:center;"><input type="checkbox" '+(s.z3capable?'checked':'')+' onchange="staffField('+idx+',\'z3capable\',this.checked)" style="accent-color:var(--pink);width:14px;height:14px;cursor:pointer;"></td>'+
+      '<td style="text-align:center;"><input type="checkbox" '+(s.salesLead?'checked':'')+' onchange="staffField('+idx+',\'salesLead\',this.checked)" style="accent-color:var(--pink);width:14px;height:14px;cursor:pointer;"></td>'+
+      '<td><select onchange="staffField('+idx+',\'rotation\',this.value)">'+rotOpts+'</select></td>'+
+      '<td><input type="number" min="0" max="20" value="'+s.priority+'" style="width:42px;" onchange="staffField('+idx+',\'priority\',+this.value)"></td>'+
+      '<td style="text-align:center;"><input type="checkbox" '+(s.active!==false?'checked':'')+' onchange="staffField('+idx+',\'active\',this.checked)" style="accent-color:var(--pink);width:14px;height:14px;cursor:pointer;"></td>'+
+      '<td><button class="btn dr" style="padding:2px 7px;font-size:11px;" onclick="removeStaff('+idx+')">x</button></td>'+
+      '</tr>';
+  });
+  document.getElementById('staffTbody').innerHTML=rows;
+}
+function staffField(idx,field,value){S.staff[idx][field]=value;saveState();}
+function staffToggleDay(idx,dayNum,checked){
+  var s=S.staff[idx];
+  if(checked&&s.works.indexOf(dayNum)<0) s.works.push(dayNum);
+  if(!checked) s.works=s.works.filter(function(n){return n!==dayNum;});
+  s.works.sort(function(a,b){return a-b;});
+  saveState();
+}
+function staffSetOff(idx,sel){
+  S.staff[idx].regularOff=Array.from(sel.selectedOptions).map(function(o){return +o.value;});
+  saveState();
+}
+function addStaff(){
+  var maxPri=S.staff.reduce(function(m,s){return Math.max(m,s.priority);},0);
+  S.staff.push({id:'staff_'+Date.now(),name:'New person',pattern:'',
+    works:[],regularOff:[],defaultZone:2,z3capable:false,salesLead:false,rotation:'',priority:maxPri+1,active:true});
+  saveState(); renderStaffTable();
+}
+function removeStaff(idx){
+  var s=S.staff[idx];
+  if(!confirm('Remove '+s.name+'? Their overrides will also be cleared.')) return;
+  Object.keys(S.overrides).forEach(function(k){if(k.indexOf(s.id+'|')===0)delete S.overrides[k];});
+  S.staff.splice(idx,1);
+  saveState(); renderStaffTable();
+}
+function saveStaffAndClose(){saveState();closePanel();renderRota();}
+
+// ── EMAIL ──────────────────────────────────────
+function toggleEmail(){
+  var el=document.getElementById('emailPre');
+  if(el.classList.contains('on')){el.classList.remove('on');return;}
+  buildEmail(); el.classList.add('on');
+}
+function buildEmail(){
+  var days=[]; for(var i=0;i<6;i++) days.push(addDays(currentMonday,i));
+  var dayData=days.map(function(d){return isBH(d)?null:computeDay(d);});
+  var staff=getStaff().filter(function(s){return s.active;});
+  var ZN={1:'Zone 1',2:'Zone 2',3:'Zone 3',4:'Zone 4'};
+  var subj=S.cfg.subject||'Zone Rota - '+weekLabel(currentMonday);
+  var lines=['TO: Matt','SUBJECT: '+subj,'','Zone Rota - '+weekLabel(currentMonday),''];
+
+  var firstData=null;
+  for(var i=0;i<dayData.length;i++){if(dayData[i]){firstData=dayData[i];break;}}
+  if(firstData){
+    lines.push('Rotation Week '+(firstData.rw===0?'A':'B')+' - Tibor: Zone '+firstData.rot.tibor+', Josh: Zone '+firstData.rot.josh);
+    lines.push('');
+  }
+
+  // Flag events
+  var evtLines=[];
+  days.forEach(function(d){
+    var dstr=fmtDate(d), evts=EVENTS[dstr]||[];
+    evts.forEach(function(ev){
+      evtLines.push(DN[d.getDay()]+' '+d.getDate()+' '+MN[d.getMonth()]+': '+ev.label+(ev.offsite?' (off-site)':'')+'  <-- end of day may vary');
+    });
+  });
+  if(evtLines.length){
+    lines.push('Events this week:');
+    evtLines.forEach(function(l){lines.push('  '+l);});
+    lines.push('');
+  }
+
+  staff.forEach(function(s){
+    var entries=[];
+    days.forEach(function(d,i){
+      if(isBH(d)) return;
+      var r=dayData[i];
+      var pl=r.placed.find(function(x){return x.s.id===s.id;});
+      var nw=r.nonWorking.find(function(x){return x.s.id===s.id;});
+      var dy=DN[d.getDay()];
+      if(pl){
+        var zl=s.salesLead?'Sales Lead':pl.status==='rescued'?'Zone 3 (cover)':ZN[pl.zone];
+        entries.push(dy+': '+zl);
+      } else if(nw){
+        if(nw.status==='hol')  entries.push(dy+': HOL');
+        if(nw.status==='sick') entries.push(dy+': Sick');
+      }
+    });
+    if(entries.length) lines.push(s.name+': '+entries.join(' | '));
+  });
+  lines.push('');
+
+  var warns=[];
+  days.forEach(function(d,i){
+    if(isBH(d)) return;
+    var c=dayData[i].counts, cfg=S.cfg, dy=DN[d.getDay()], w=[];
+    if((c[2]||0)<cfg.z2min) w.push('Z2 '+(c[2]||0)+'/'+cfg.z2min);
+    if((c[3]||0)<1)         w.push('Z3 no cover');
+    if((c[4]||0)<cfg.z4min) w.push('Z4 gap');
+    if((c[1]||0)<cfg.z1min) w.push('Z1 low');
+    if(w.length) warns.push(dy+': '+w.join(', '));
+  });
+  if(warns.length){lines.push('Coverage flags:');warns.forEach(function(w){lines.push('  ! '+w);});lines.push('');}
+  lines.push('--');
+  lines.push('Auto-generated - Dawkes Zone Rota');
+  document.getElementById('emailPre').textContent=lines.join('\n');
+}
+
+// ── INIT ───────────────────────────────────────
+function init(){ loadState(); currentMonday=defaultMonday(); renderRota(); }
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
